@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="RobotCarSecurity.DevicesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800" Background="#88121212">
+
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Card container -->
+        <Border Grid.Column="0"  Margin="0,0,20,0">
+            <TabControl>
+                <!-- Controls Tab -->
+                <TabItem Header="Controls">
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+                        <Button Style="{StaticResource ControlButtonStyle}" Content="Forward" Click="SendCommand_Click" Tag="forward"/>
+                        <Button Style="{StaticResource ControlButtonStyle}" Content="Backward" Click="SendCommand_Click" Tag="backward"/>
+                        <Button Style="{StaticResource ControlButtonStyle}" Content="Right" Click="SendCommand_Click" Tag="right"/>
+                        <Button Style="{StaticResource ControlButtonStyle}" Content="Left" Click="SendCommand_Click" Tag="left"/>
+                    </StackPanel>
+                </TabItem>
+
+                <!-- Devices Tab -->
+                <TabItem Header="Devices">
+                    <StackPanel Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Width="200" >
+                        <TextBlock Text="Select Device:" 
+                   Foreground="White" 
+                   FontWeight="SemiBold" 
+                   Margin="0 0 0 6" />
+                        <ComboBox x:Name="DevicesComboBox" 
+                             
+                              MinWidth="180">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" Foreground="White"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </Border>
+
+        <!--  Image + Overlay Text -->
+        <Grid Grid.Column="1" Background="Black" ClipToBounds="True">
+            <Image x:Name="DeviceImage"
+                   Stretch="Uniform"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"/>
+
+            <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+
+                <!-- Overlay TextBlock bottom-left -->
+                <TextBlock x:Name="OverlayDeviceName"
+                       Foreground="White"
+                       Background="#66000000"
+                       FontWeight="Bold"
+                       FontSize="16"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Left"
+                      
+                       Text="No Device Selected"/>
+
+                <TextBlock x:Name="OverlayDistance"
+                       Foreground="White"
+                       Background="#66000000"
+                       FontWeight="Bold"
+                       FontSize="16"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Left"
+                       Text="No distance data"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

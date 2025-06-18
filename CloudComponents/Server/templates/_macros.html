@@ -1,0 +1,351 @@
+{% macro head() -%}
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title>Robot Car Security</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+    <!-- jQuery, Popper.js, Bootstrap JS  -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <style>
+      html, body {
+        height: 100%;
+      }
+      .wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      main {
+        flex: 1;
+        padding-top: 70px;
+        position: relative; /* Add this */
+      }
+      footer {
+        background-color: #1e676e;
+        padding: 1rem;
+        text-align: center;
+        width: 100%;
+        position: relative; /* Change from absolute if it was */
+        margin-top: auto; /* Push to bottom */
+      }
+
+      .right-section {
+        flex: 1 1 45%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding-right: 10px;
+        min-width: 300px;
+      }
+
+      .device-selector {
+        width: 100%;
+      }
+
+      .dropdown-menu {
+          z-index: 1000; /* Ensure it appears above other elements */
+        }
+
+      .background-image-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('{{ url_for("static", filename="logo.png") }}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        z-index: -1; /* push it behind everything */
+      }
+
+      /* Optional: dark overlay for contrast */
+      .background-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4); /* darken */
+      }
+
+      .esp32-container {
+        display: flex;
+        flex-direction: row;
+        flex: 1; /* This makes it take up remaining space */
+        gap: 20px;
+        width: 100%;
+        margin: 0 auto;
+        padding-bottom: 20px; /* Add some padding at bottom */
+      }
+
+      .camera-section {
+        flex: 1 1 55%;
+        min-width: 300px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #image-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #esp32-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      #overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        width: 100%;
+        height: 100%;
+      }
+
+      .controls-section {
+        flex: 1;
+        min-width: 300px;
+        overflow-y: auto; /* Keep this for scrolling */
+        padding-right: 10px;
+        max-height: 80vh;
+      }
+
+      #terminal-output {
+        height: 200px; /* Fixed height instead of max-height */
+        overflow-y: auto; /* Scroll inside the terminal */
+        resize: vertical;
+        font-family: monospace;
+        background: #111;
+        color: #0f0;
+        padding: 10px;
+        border-radius: 4px;
+        resize: none; /* Prevent manual resizing */
+        flex-shrink: 0; /* Prevent shrinking */
+      }
+
+      .card-body.long {
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      #image-wrapper {
+        position: relative;
+        width: 100%;
+        flex: 1;
+      }
+
+      #image-text-overlay {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        color: white;
+        z-index: 2;
+        font-size: 1rem;
+        text-shadow: 0 0 5px black;
+        pointer-events: none;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 4px 8px;
+        border-radius: 4px;
+      }
+
+      #image-text-overlay p,
+      #image-text-overlay div {
+        margin: 0;
+        padding: 2px 6px;
+      }
+
+      .download-section {
+          padding: 15px;
+        }
+        .download-button {
+          display: inline-block;
+          padding: 10px 15px;
+          background-color: #4285f4;
+          color: white;
+          text-decoration: none;
+          border-radius: 4px;
+          margin: 10px 0;
+        }
+        .download-button:hover {
+          background-color: #3367d6;
+        }
+        .download-info {
+          font-size: 0.9em;
+          color: #666;
+          margin-top: 10px;
+        }
+
+      /* Responsive for mobile */
+      @media (max-width: 768px) {
+      main {
+        margin-bottom: 70px; /* reduce bottom margin for mobile */
+      }
+
+      .esp32-container {
+        flex-direction: column;
+        min-height: auto; /* Remove fixed height */
+      }
+
+      .camera-section {
+        position: sticky;
+        top: 70px; /* adjust if your navbar height changes */
+        height: 40vh; /* fixed height so camera feed always visible */
+        width: 100%;
+        background: white;
+        z-index: 20;
+        flex-shrink: 0;
+      }
+
+      #image-wrapper {
+        width: 100%;
+        height: 100%; /* fill sticky container */
+      }
+
+      #esp32-image,
+      #overlay {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Make controls + device selector scrollable in remaining space */
+      .controls-section {
+        max-height: none; /* Remove height limit on mobile */
+        overflow-y: visible;
+      }
+
+      .device-selector {
+        margin-bottom: 10px;
+      }
+
+        #terminal-output {
+          height: 150px; /* Slightly smaller for mobile */
+        }
+
+      .camera-section {
+        height: 40vh;
+      }
+
+       .right-section {
+          height: auto; /* Allow natural height on mobile */
+        }
+
+    }
+
+
+    </style>
+
+</head>
+{%- endmacro %}
+
+{% macro navbar() -%}
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+    <a href="{{ url_for('home') }}">
+    <img src="{{ url_for('static', filename='logo.png') }}" class="img-fluid" style="width: 75px;" />
+  </a>
+  <a style="color: #1e676e" class="navbar-brand" href="{{ url_for('home') }}">HOME</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+        <a class="nav-link" href="{{ url_for('all_devices')}}">Devices <span class="sr-only">(current)</span></a>
+      </li>
+        <li class="nav-item active">
+        <a class="nav-link" href="{{ url_for('detections')}}">Detections <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://borostitusz.netlify.app/">Contact</a>
+      </li>
+    </ul>
+  </div>
+
+</nav>
+<hr>
+
+{%- endmacro %}
+
+
+{% macro expandable_card(title, short_content, long_content, icon_name=None) -%}
+<div class="card mb-3">
+  <div class="card-header d-flex justify-content-between align-items-center" onclick="toggleCard(this)">
+    <span>
+      {% if icon_name %}
+        <i class="fas fa-{{ icon_name }} me-2 fa-2x"></i>
+      {% endif %}
+      {{ title }}
+    </span>
+    <span class="toggle-icon">&#9660;</span>
+  </div>
+  <div class="card-body short">
+    {{ short_content|safe }}
+  </div>
+  <div class="card-body long d-none">
+    {{ long_content|safe }}
+  </div>
+</div>
+{%- endmacro %}
+
+{% macro image_card(name, display_name, url, timestamp) -%}
+<div class="card" style="width: 200px; position: relative;">
+  <img src="{{ url | safe }}" class="card-img-top" alt="Image">
+  <div class="card-body p-2">
+    <h6 class="card-title" style="font-size: 0.9rem; word-break: break-all;">{{ display_name }}</h6>
+    <p class="card-text" style="font-size: 0.8rem;">{{ timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+  </div>
+
+  <!-- 3 DOT MENU -->
+  <div class="dropdown" style="position: absolute; top: 10px; right: 10px;">
+    <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+      &#8942;
+    </button>
+    <div class="dropdown-menu dropdown-menu-right">
+      <a class="dropdown-item" href="#" onclick="renameImage('{{ name }}')">Rename</a>
+      <a class="dropdown-item text-danger" href="#" onclick="deleteImage('{{ name }}')">Delete</a>
+    </div>
+  </div>
+</div>
+{%- endmacro %}
+
+
+{% macro bottombar() -%}
+
+<p style="color: white;">2025 | Boros Titusz | <a style="color:white"  href="{{ url_for('logout')}}">Logout</a></p>
+
+{%- endmacro %}

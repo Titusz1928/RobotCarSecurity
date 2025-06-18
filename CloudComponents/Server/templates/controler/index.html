@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="esp32-container">
+
+    <!-- CAMERA FEED -->
+    <div class="camera-section">
+      <div id="image-wrapper">
+        <img id="esp32-image"
+             src="data:image/jpeg;base64,{{ image }}"
+             onerror="this.onerror=null; this.src='static/noconnection.png'">
+        <canvas id="overlay"></canvas>
+        <!-- TEXT OVERLAYS -->
+        <div id="image-text-overlay">
+          <p id="selected-device-id">Device: none</p>
+          <div id="detectionResult">Detection text</div>
+          <p id="esp-distance">Distance text</p>
+        </div>
+      </div>
+
+      <audio id="esp-audio" style="display: none;">
+          Your browser does not support the audio element.
+      </audio>
+
+    </div>
+
+  <!--DEVICE SELECTOR + CONTROLS -->
+<div class="right-section">
+  <!-- DEVICE SELECTOR -->
+  <div class="device-selector">
+    <div class="card mb-3 not-toggleable">
+      <div class="card-header">Device</div>
+      <div class="card-body">
+        <label for="deviceSelector">Select Device:</label>
+        <select name="device_id" id="deviceSelector">
+          <!-- DYNAMICALLY POPULATED -->
+        </select>
+      </div>
+      <a href="{{ url_for('all_devices') }}">
+        <button class="btn btn-info" type="button">See all devices</button>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls-section">
+    <div class="card mb-3 not-toggleable">
+      <div class="card-header">Controls</div>
+      <div class="card-body long">
+        <h6>Get started with "help" command</h6>
+        <form id="sendForm">
+          <input type='text' name='message' placeholder='Message to ESP32' id='messageInput' />
+          <input type='hidden' name='device_id' id='formDeviceId' />
+          <button class="btn btn-info" type='submit'>Send</button>
+        </form>
+
+        {{ macros.expandable_card(
+          "Terminal Output",
+          "",
+          "<div id='terminal-output' style='max-height: 200px; overflow-y: auto; font-family: monospace; background: #111; color: #0f0; padding: 10px; border-radius: 4px;'></div>",
+          icon_name="fa-solid fa-terminal"
+        ) }}
+
+        <div style='margin-top: 20px;'>
+          <h3>Control Buttons:</h3>
+          <button class="btn btn-light" onclick="sendCommand('FORWARD')"><i class="fa-solid fa-arrow-up"></i></button>
+          <button class="btn btn-light" onclick="sendCommand('BACKWARD')"><i class="fa-solid fa-arrow-down"></i></button>
+          <button class="btn btn-light" onclick="sendCommand('LEFT')"><i class="fa-solid fa-arrow-left"></i></button>
+          <button class="btn btn-light" onclick="sendCommand('RIGHT')"><i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <div class="card-body long">
+        <h3>List of commands</h3>
+        {{ macros.expandable_card(
+          "Command list",
+          "",
+          "
+            <div id='command-list'></div>
+            <button class='btn btn-light' type='button' onclick='addCommand()'>Add Command</button>
+            <br><br>
+            <button class='btn btn-info' onclick='executeCommands()'>Execute</button>
+            <button class='btn btn-light' onclick='stopExecution()'>Stop</button>
+            <button class='btn btn-light' onclick='saveCommands()'>Save</button>
+            <button class='btn btn-light' onclick='loadCommands()'>Load</button>
+            <button class='btn btn-light' onclick='deleteSavedCommands()'>Delete Saved Set</button>
+          ",
+          icon_name="fa-solid fa-list"
+        ) }}
+      </div>
+    </div>
+</div>
+</div>
+
+<script>
+  const passedDeviceId = "{{ device_id | safe }}";
+
+  fetch('/devices', {
+    headers: {
+      'X-API-KEY': ''
+    }
+  })
+  .then(res => {
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.json();
+  })
+  .then(devices => {
+    const selector = document.getElementById('deviceSelector');
+    // Clear existing options first
+    selector.innerHTML = '';
+
+    devices.forEach(id => {
+      const option = document.createElement('option');
+      option.value = id;
+      option.textContent = id;
+      if (id === passedDeviceId) {
+        option.selected = true;
+      }
+      selector.appendChild(option);
+    });
+
+    // Optional: trigger a change manually if needed
+    selector.dispatchEvent(new Event('change'));
+  })
+  .catch(error => {
+    console.error('Error fetching devices:', error);
+  });
+</script>
+
+<script src="{{ url_for('static', filename='js/controller.js') }}"></script>
+{% endblock %}

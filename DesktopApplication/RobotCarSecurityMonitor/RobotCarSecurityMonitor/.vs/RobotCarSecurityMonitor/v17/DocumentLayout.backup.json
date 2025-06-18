@@ -1,0 +1,117 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Boros Titusz\\University\\UPT\\LICENTA\\desktopApp\\RobotCarSecurityMonitor\\RobotCarSecurityMonitor\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{1D9E905C-CB6B-4A19-9F11-9FD590E058AA}|RobotCarSecurityMonitor\\RobotCarSecurityMonitor.csproj|c:\\users\\boros titusz\\university\\upt\\licenta\\desktopapp\\robotcarsecuritymonitor\\robotcarsecuritymonitor\\robotcarsecuritymonitor\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1D9E905C-CB6B-4A19-9F11-9FD590E058AA}|RobotCarSecurityMonitor\\RobotCarSecurityMonitor.csproj|solutionrelative:robotcarsecuritymonitor\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1D9E905C-CB6B-4A19-9F11-9FD590E058AA}|RobotCarSecurityMonitor\\RobotCarSecurityMonitor.csproj|c:\\users\\boros titusz\\university\\upt\\licenta\\desktopapp\\robotcarsecuritymonitor\\robotcarsecuritymonitor\\robotcarsecuritymonitor\\deviceworker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1D9E905C-CB6B-4A19-9F11-9FD590E058AA}|RobotCarSecurityMonitor\\RobotCarSecurityMonitor.csproj|solutionrelative:robotcarsecuritymonitor\\deviceworker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1D9E905C-CB6B-4A19-9F11-9FD590E058AA}|RobotCarSecurityMonitor\\RobotCarSecurityMonitor.csproj|c:\\users\\boros titusz\\university\\upt\\licenta\\desktopapp\\robotcarsecuritymonitor\\robotcarsecuritymonitor\\robotcarsecuritymonitor\\worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1D9E905C-CB6B-4A19-9F11-9FD590E058AA}|RobotCarSecurityMonitor\\RobotCarSecurityMonitor.csproj|solutionrelative:robotcarsecuritymonitor\\worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 11,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:3:0:{34c7837f-3b3a-449c-bdf0-bdad86cbaf4a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:56:0:{dcc4ea97-1c0c-482b-b205-e541c0df9728}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:57:0:{dcc4ea97-1c0c-482b-b205-e541c0df9728}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:59:0:{dcc4ea97-1c0c-482b-b205-e541c0df9728}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:60:0:{dcc4ea97-1c0c-482b-b205-e541c0df9728}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:70:0:{dcc4ea97-1c0c-482b-b205-e541c0df9728}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:82:0:{dcc4ea97-1c0c-482b-b205-e541c0df9728}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:83:0:{dcc4ea97-1c0c-482b-b205-e541c0df9728}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DeviceWorker.cs",
+              "DocumentMoniker": "C:\\Users\\Boros Titusz\\University\\UPT\\LICENTA\\desktopApp\\RobotCarSecurityMonitor\\RobotCarSecurityMonitor\\RobotCarSecurityMonitor\\DeviceWorker.cs",
+              "RelativeDocumentMoniker": "RobotCarSecurityMonitor\\DeviceWorker.cs",
+              "ToolTip": "C:\\Users\\Boros Titusz\\University\\UPT\\LICENTA\\desktopApp\\RobotCarSecurityMonitor\\RobotCarSecurityMonitor\\RobotCarSecurityMonitor\\DeviceWorker.cs",
+              "RelativeToolTip": "RobotCarSecurityMonitor\\DeviceWorker.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T14:35:07.701Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Worker.cs",
+              "DocumentMoniker": "C:\\Users\\Boros Titusz\\University\\UPT\\LICENTA\\desktopApp\\RobotCarSecurityMonitor\\RobotCarSecurityMonitor\\RobotCarSecurityMonitor\\Worker.cs",
+              "RelativeDocumentMoniker": "RobotCarSecurityMonitor\\Worker.cs",
+              "ToolTip": "C:\\Users\\Boros Titusz\\University\\UPT\\LICENTA\\desktopApp\\RobotCarSecurityMonitor\\RobotCarSecurityMonitor\\RobotCarSecurityMonitor\\Worker.cs",
+              "RelativeToolTip": "RobotCarSecurityMonitor\\Worker.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T14:34:30.553Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Boros Titusz\\University\\UPT\\LICENTA\\desktopApp\\RobotCarSecurityMonitor\\RobotCarSecurityMonitor\\RobotCarSecurityMonitor\\Program.cs",
+              "RelativeDocumentMoniker": "RobotCarSecurityMonitor\\Program.cs",
+              "ToolTip": "C:\\Users\\Boros Titusz\\University\\UPT\\LICENTA\\desktopApp\\RobotCarSecurityMonitor\\RobotCarSecurityMonitor\\RobotCarSecurityMonitor\\Program.cs",
+              "RelativeToolTip": "RobotCarSecurityMonitor\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T14:29:20.759Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 186,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

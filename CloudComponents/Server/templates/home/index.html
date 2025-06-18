@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+
+{% block container %}
+<div class="container mt-5">
+
+
+  {% block content %}
+
+
+
+    <h1 style="color: white;">Welcome</h1>
+
+    {{ macros.expandable_card(
+    " About project",
+    "",
+    "<p>
+        As part of this project I want to create a security system which visualizes live camera feed and displays them. Those cameras can be standard esp32cam microcontrollers or can be small robot cars, capable of movement.
+        Each device can be programmed separately, you can customize each one with the help of a terminal. You can also turn on and off features such as person detection and lane assist for each device.
+        Person detection is the analysis of the footage and whenever it detects a person it notifies you on your phone, using a mobile application. lane assist helps the robot cars move.
+        A robot car is powered by 4 Li-ion batteries and uses 2 microcontrollers (Arduino Uno & ESP32Cam) and a motor driver module (L298N).
+    </p>
+    <img src='/static/robotcar.jpg' class='img-fluid' />
+    <br>
+    <hr>
+    <br>
+    <p>
+        There is also a desktop application that allows you to record the feed from the devices so that you can replay it later.
+    </p>
+
+    ",
+    icon_name="fa-regular fa-circle-info"
+  ) }}
+
+
+    {{ macros.expandable_card(
+      " Robot Car Components",
+      "",
+      "
+      <table class='table'>
+        <tr>
+          <td><img src='/static/arduinouno.jpg' class='img-fluid' /></td>
+          <td><img src='/static/esp32cam.jpg' class='img-fluid' /></td>
+        </tr>
+        <tr>
+          <td><img src='/static/l298n.jpg' class='img-fluid' /></td>
+          <td><img src='/static/lm2596.jpg' class='img-fluid' /></td>
+        </tr>
+        <tr>
+          <td><img src='/static/motor.jpg' class='img-fluid' /></td>
+        </tr>
+      </table>
+      ",
+  icon_name="fa-solid fa-puzzle-piece"
+    ) }}
+
+        {{ macros.expandable_card(
+      " Install apps",
+      "Windows & Android",
+      "
+         <div class='download-section'>
+          <h4>Windows Installer</h4>
+          <a href='/static/downloads/RobotCarInstaller.exe' class='download-button'>
+            <i class='fas fa-download'></i> Download Windows Application (v1.01)
+          </a>
+          <p class='download-info'>
+            <strong>System Requirements:</strong> Windows 10/11, .NET 8.0<br>
+            <strong>File Size:</strong> 600MB<br>
+            <strong>SHA256:</strong> 8cb80bef0e2f7a1b3dcf3ea93f6ca20322573d8ec6bee20b6a768cc8fdd32fcf
+          </p>
+        </div>
+        <div class='download-section' style='margin-top: 20px;'>
+                    <h4>Android Installer</h4>
+          <a href='/static/downloads/RobotCarSecurity.apk' class='download-button'>
+            <i class='fas fa-download'></i> Download Android Application
+          </a>
+          <p class='download-info'>
+            <strong>System Requirements:</strong> Android 7 Nougat<br>
+            <strong>File Size:</strong> 20MB<br>
+            <strong>SHA256:</strong> 60068d56b269a8f328baba20fa80ff364d3129b3b9e5e5540404b7365e8f2cb8
+          </p>
+        </div>
+      ",
+      icon_name="download"
+    ) }}
+
+
+{% endblock %}
+</div>
+{% endblock %}

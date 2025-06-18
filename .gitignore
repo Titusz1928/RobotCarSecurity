@@ -1,0 +1,74 @@
+# === ANDROID STUDIO PROJECT ===
+.gradle/
+build/
+*/build/
+local.properties
+.idea/
+*.jks
+*.keystore
+*.apk
+*.ap_
+*.log
+captures/
+output.json
+*.pem
+*.key
+*.crt
+
+# === VISUAL STUDIO / C# PROJECTS (WPF + SERVICE WORKER) ===
+bin/
+obj/
+[Bb]uild/
+[Ll]ogs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.idea/
+*.sln.iml
+.vscode/
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.cache
+*.dbmdl
+*.bak
+*.log
+publish/
+App_Data/
+*.tmp
+*.temp
+*.bak
+*.old
+*.user.config
+*.dll
+
+# === SECRETS AND ENV VARS ===
+*.secret.json
+*.secrets.json
+secrets/
+credentials.json
+*.env
+
+# === PYTHON (Optional) ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pt
+venv/
+
+# === OS FILES ===
+.DS_Store
+Thumbs.db
+
+# === IGNORE GENERATED MEDIA (if not needed) ===
+# Adjust or scope this if you have needed assets
+#static/*.png
+#static/*.jpg
+#static/*.ico
+#static/*.webmanifest
+#static/*.svg

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block container %}
+<div class="container mt-5">
+
+    {% block content %}
+
+    {{ macros.expandable_card(
+      "Welcome!",
+      "Please enter password to get access to page",
+      '
+        <form method="POST">
+            <input type="password" name="password" placeholder="Enter password" />
+            <button type="submit">Login</button>
+        </form>
+      ',
+        icon_name="user"
+    ) }}
+
+    {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    {% endblock %}
+
+</div>
+
+{% endblock %}

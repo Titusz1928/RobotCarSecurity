@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Robot Car Security</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Robot Car Security</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_controller">Control</string>
+    <string name="menu_detections">Detections</string>
+    <string name="menu_camera">Camera</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="Hominfo"> As part of this project I want to create a security system which visualizes live camera feed and displays them. Those cameras can be standard esp32cam microcontrollers or can be small robot cars, capable of movement.
+        Each device can be programmed separately, you can customize each one with the help of a terminal. You can also turn on and off features such as person detection and lane assist for each device.
+        Person detection is the analysis of the footage and whenever it detects a person it notifies you on your phone, using a mobile application. lane assist helps the robot cars move.
+        A robot car is powered by 4 Li-ion batteries and uses 2 microcontrollers (Arduino Uno and ESP32Cam) and a motor driver module (L298N).</string>
+
+
+    <string name="virtualUrl">http://10.0.2.2:4000</string>
+    <string name="realUrl">http://192.168.1.247:4000</string>
+    <string name="virtualUrlWS">ws://10.0.2.2:8765</string>
+    <string name="realUrlWS">ws://192.168.1.247:8765</string>
+
+    <string name="prodUrlWSS">wss://</string>
+    <string name="prodUrl">https://</string>
+
+    <string name="apikey"></string>
+</resources>

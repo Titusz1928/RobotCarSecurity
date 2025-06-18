@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+
+{% block container %}
+<div class="container mt-5">
+
+
+{% block content %}
+
+  <h2 style="color: white;" >Detections</h2>
+
+  {% if images %}
+    <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+      {% for image in images %}
+        {{ macros.image_card(image.name, image.display_name, image.url, image.created) }}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No images found in the processed bucket.</p>
+  {% endif %}
+{% endblock %}
+</div>
+
+
+{% endblock %}
+
