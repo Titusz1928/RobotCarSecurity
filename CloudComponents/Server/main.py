@@ -93,6 +93,21 @@ register_socketio_handlers(socketio)
 api_key=os.getenv('API_KEY')
 
 
+commands_message = (
+    "Available commands:\n"
+    " - help: Show this help message\n"
+    " - clear: Clears terminal\n"
+    " - Arduino commands:\n"
+    "    Status=get Arduino info\n"
+    "    Movement commands: forward, backward, right, left, stop\n"
+    "    Assisted stop: ason=turn on, asoff=turn off\n"
+    " - Esp32cam commands\n"
+    "    Activate lighting: esp32_led_on=turn on, esp32_led_off=turn off\n"
+    "    Change resolution: esp32_change_resolution:(value from 1-10, 1=lowest, 10=highest)\n"
+    "    Measure Latency: ping"
+)
+
+
 #FLASK SERVER
 def api_key_required(f):
     @wraps(f)
@@ -265,6 +280,9 @@ def rename_image():
 
     return jsonify({'message': 'Image renamed'}), 200
 
+
+
+
 @app.route('/send', methods=['POST'])
 @api_key_required
 def send_to_esp32():
@@ -277,7 +295,7 @@ def send_to_esp32():
         if socketio:
             socketio.emit('terminal_log', {
                 'device_id': device_id,
-                'message': "Available commands:\n - help: Show this help message\n- clear: Clears terminal\n - Arduino commands:\n Status=get Arduino info\n - Movement commands: forward, backward, right, left, stop\n - Assisted stop: ason=turn on, asoff=turn off\n - Esp32cam commands\n - Activate lighting: esp32_led_on=turn on, esp32_led_off=turn off\n - Change resolution: esp32_change_resolution:(value from 1-10, 1=lowest, 10=highest)"
+                'message': commands_message
             }, broadcast=True)
             return redirect(url_for('control'))
         else:

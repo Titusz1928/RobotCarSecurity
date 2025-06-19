@@ -115,13 +115,13 @@ document.getElementById('sendForm').addEventListener('submit', function(e) {
 socket.on('terminal_log', function(data) {
     const terminal = document.getElementById('terminal-output');
     const deviceId = data.device_id || "Unknown";
-    const msg = data.message;
+    const msg = data.message.replace(/\n/g, '<br>');
     const line = document.createElement('div');
-    line.textContent = `[${deviceId}] ${msg}`;
+    line.innerHTML = `[${deviceId}] ${msg}`;
     terminal.appendChild(line);
 
     terminal.scrollTop = terminal.scrollHeight;
-  });
+});
 
 socket.on('terminal_clear', function() {
   const terminal = document.getElementById('terminal-output');

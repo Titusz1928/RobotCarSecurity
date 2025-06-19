@@ -34,6 +34,20 @@ firebase_app = None
 db = None
 
 
+commands_message = (
+    "Available commands:\n"
+    " - help: Show this help message\n"
+    " - clear: Clears terminal\n"
+    " - Arduino commands:\n"
+    "    Status=get Arduino info\n"
+    "    Movement commands: forward, backward, right, left, stop\n"
+    "    Assisted stop: ason=turn on, asoff=turn off\n"
+    " - Esp32cam commands\n"
+    "    Activate lighting: esp32_led_on=turn on, esp32_led_off=turn off\n"
+    "    Change resolution: esp32_change_resolution:(value from 1-10, 1=lowest, 10=highest)\n"
+    "    Measure Latency: ping"
+)
+
 #CLASSES
 class DeviceSetting:
     def __init__(self, device_id: str, lane_assist: bool, person_detection: bool):
@@ -249,7 +263,7 @@ def register_socketio_handlers(socketio):
             print(f"[send_to_esp32] Sending help message to all clients")
             socketio.emit('terminal_log', {
                 'device_id': device_id,
-                'message': "Available commands:\n - help: Show this help message\n- clear: Clears terminal\n - Arduino commands:\n Status=get Arduino info\n - Movement commands: forward, backward, right, left, stop\n - Assisted stop: ason=turn on, asoff=turn off\n - Esp32cam commands\n - Activate lighting: esp32_led_on=turn on, esp32_led_off=turn off\n - Change resolution: esp32_change_resolution:(value from 1-10, 1=lowest, 10=highest)"
+                'message': commands_message
             }, broadcast=True)
             return
 
