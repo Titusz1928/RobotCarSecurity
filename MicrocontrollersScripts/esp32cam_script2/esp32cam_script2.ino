@@ -11,7 +11,7 @@ const char* password = "";
 const char* DEVICE_ID = "REAL_ESP32CAM";
 
 // WebSocket server IP and port
-const char* websocket_host = "";
+const char* websocket_host = "";  // Update with your PC's IP
 const uint16_t websocket_port = 443;
 
 WebSocketsClient webSocket;
@@ -40,6 +40,11 @@ void webSocketEvent(WStype_t type, uint8_t* payload, size_t length) {
       String cmd((char*)payload, length);
       cmd.trim();
 
+      if (cmd == "ping") {
+          webSocket.sendTXT("pong");
+          return;
+      }
+
       if (cmd.startsWith("esp32")) {
         if (cmd == "esp32_led_on") {
           digitalWrite(4, HIGH);
@@ -64,7 +69,7 @@ void webSocketEvent(WStype_t type, uint8_t* payload, size_t length) {
         }
       } else {
         cmd += "\n";
-        Serial.print(cmd);
+        Serial.print(cmd);  // Forward to Arduino via Serial
       }
       break;
   }

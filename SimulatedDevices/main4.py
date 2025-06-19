@@ -7,10 +7,10 @@ import cv2
 import numpy as np
 
 DEVICE_ID = "SIM04"
-WEBSOCKET_SERVER = "ws://:8765"
+WEBSOCKET_SERVER = "wss://"
 
 # OpenCV VideoCapture initialization
-cap = cv2.VideoCapture(0)  # 0 = default webcam
+cap = cv2.VideoCapture(0)  # 0 = default webcam, DroidCam usually appears as 1 or 2
 
 if not cap.isOpened():
     raise Exception("Webcam (or DroidCam) not found. Make sure it's active and accessible.")
@@ -63,7 +63,11 @@ async def simulate_device():
             try:
                 message = await asyncio.wait_for(websocket.recv(), timeout=0.1)
                 if isinstance(message, str):
-                    print(f"[{DEVICE_ID}] Received command: {message}")
+                    if message.strip().lower() == "ping":
+                        await websocket.send("pong")
+                        print(f"[{DEVICE_ID}] Responded with pong")
+                    else:
+                        print(f"[{DEVICE_ID}] Received command: {message}")
             except asyncio.TimeoutError:
                 pass
 

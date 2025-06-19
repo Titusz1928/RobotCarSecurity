@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 
 DEVICE_ID = "SIM02"  # Unique identifier for this simulated device
-WEBSOCKET_SERVER = "ws://:8765"
+WEBSOCKET_SERVER = "wss://"
 
 
 # Simulate a binary image (normally JPEG data)
@@ -52,7 +52,11 @@ async def simulate_device():
             try:
                 message = await asyncio.wait_for(websocket.recv(), timeout=0.1)
                 if isinstance(message, str):
-                    print(f"[{DEVICE_ID}] Received command: {message}")
+                    if message.strip().lower() == "ping":
+                        await websocket.send("pong")
+                        print(f"[{DEVICE_ID}] Responded with pong")
+                    else:
+                        print(f"[{DEVICE_ID}] Received command: {message}")
             except asyncio.TimeoutError:
                 pass  # No incoming message this cycle
 

@@ -56,6 +56,8 @@ public class CameraFragment extends Fragment {
     private String mainUrl;
     private ExecutorService cameraExecutor;
 
+    private androidx.camera.core.Camera camera;
+
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable imageSendRunnable;
     private Bitmap latestFrame;
@@ -80,7 +82,8 @@ public class CameraFragment extends Fragment {
                     new String[]{Manifest.permission.CAMERA},
                     CAMERA_REQUEST_CODE);
         } else {
-            startCamera();
+            // Permission already granted — you can start using the camera
+            startCamera(); // or your image capture code
         }
 
 
@@ -95,7 +98,7 @@ public class CameraFragment extends Fragment {
         String id = prefs.getString("device_id", null);
 
         if (id == null) {
-            // time-based ID
+            // Use time-based ID, you could also append a random number or UUID if desired
             id = "mobildevice_" + System.currentTimeMillis();
             prefs.edit().putString("device_id", id).apply();
         }
@@ -111,9 +114,11 @@ public class CameraFragment extends Fragment {
             try {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
 
+                // Create the Preview use case
                 Preview preview = new Preview.Builder().build();
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
+                // Create the ImageAnalysis use case
                 ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build();
@@ -126,9 +131,11 @@ public class CameraFragment extends Fragment {
 
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
 
+                // Unbind use cases before rebinding
                 cameraProvider.unbindAll();
 
-                cameraProvider.bindToLifecycle(
+                // Bind to lifecycle with BOTH preview and imageAnalysis
+                camera = cameraProvider.bindToLifecycle(
                         this,
                         cameraSelector,
                         preview,
@@ -166,6 +173,22 @@ public class CameraFragment extends Fragment {
                 @Override
                 public void onMessage(String message) {
                     Log.d("WebSocket", "Text received: " + message);
+                    if (message.equalsIgnoreCase("ping")) {
+                        webSocketClient.send("pong");
+                        Log.d("WebSocket", "Sent pong in response to ping");
+                    }
+                    if (message.equalsIgnoreCase("esp32_led_on")) {
+                        if (camera != null) {
+                            camera.getCameraControl().enableTorch(true);
+                            Log.d("WebSocket", "Torch turned ON");
+                        }
+                    }
+                    if (message.equalsIgnoreCase("esp32_led_off")) {
+                        if (camera != null) {
+                            camera.getCameraControl().enableTorch(false);
+                            Log.d("WebSocket", "Torch turned OFF");
+                        }
+                    }
                 }
 
                 @Override
