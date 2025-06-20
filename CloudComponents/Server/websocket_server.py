@@ -33,7 +33,6 @@ firestore_device_settings = []
 firebase_app = None
 db = None
 
-
 commands_message = (
     "Available commands:\n"
     " - help: Show this help message\n"
@@ -44,6 +43,7 @@ commands_message = (
     "    Assisted stop: ason=turn on, asoff=turn off\n"
     " - Esp32cam commands\n"
     "    Activate lighting: esp32_led_on=turn on, esp32_led_off=turn off\n"
+    "    Video Streaming: esp32_stream_on=turn on, esp32_stream_off=turn off\n"
     "    Change resolution: esp32_change_resolution:(value from 1-10, 1=lowest, 10=highest)\n"
     "    Measure Latency: ping"
 )

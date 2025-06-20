@@ -47,6 +47,7 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 public class CameraFragment extends Fragment {
 
@@ -62,8 +63,10 @@ public class CameraFragment extends Fragment {
     private Runnable imageSendRunnable;
     private Bitmap latestFrame;
     private volatile boolean isSending = false;
-
+    private boolean isReconnecting = false;
     private static final int CAMERA_REQUEST_CODE = 100;
+
+    private static final long RECONNECT_DELAY_MS = 5000;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -163,6 +166,7 @@ public class CameraFragment extends Fragment {
                 @Override
                 public void onOpen(ServerHandshake handshakedata) {
                     Log.d("MyLog", "Connected");
+                    isReconnecting = false;
                     getActivity().runOnUiThread(() ->
                             Toast.makeText(getContext(), "Device connected successfully!", Toast.LENGTH_SHORT).show()
                     );
@@ -173,6 +177,10 @@ public class CameraFragment extends Fragment {
                 @Override
                 public void onMessage(String message) {
                     Log.d("WebSocket", "Text received: " + message);
+                    if (message.equalsIgnoreCase("automaticping")) {
+                        webSocketClient.send("automaticpong");
+                        Log.d("WebSocket", "Sent automaticpong in response to automaticping");
+                    }
                     if (message.equalsIgnoreCase("ping")) {
                         webSocketClient.send("pong");
                         Log.d("WebSocket", "Sent pong in response to ping");
@@ -199,19 +207,31 @@ public class CameraFragment extends Fragment {
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
                     Log.d("WebSocket", "Closed: " + reason);
-                    getActivity().runOnUiThread(() ->
-                            Toast.makeText(getContext(), "Disconnected: " + reason, Toast.LENGTH_SHORT).show()
-                    );
+
+                    FragmentActivity activity = getActivity();
+                    if (isAdded() && activity != null) {
+                        activity.runOnUiThread(() ->
+                                Toast.makeText(getContext(), "Disconnected: " + reason, Toast.LENGTH_SHORT).show()
+                        );
+                    }
+
                     stopSendingImages();
+                    scheduleReconnect();
                 }
 
                 @Override
                 public void onError(Exception ex) {
                     Log.e("WebSocket", "Error", ex);
-                    getActivity().runOnUiThread(() ->
-                            Toast.makeText(getContext(), "Connection error!", Toast.LENGTH_SHORT).show()
-                    );
+
+                    FragmentActivity activity = getActivity();
+                    if (isAdded() && activity != null) {
+                        activity.runOnUiThread(() ->
+                                Toast.makeText(getContext(), "Connection error!", Toast.LENGTH_SHORT).show()
+                        );
+                    }
+
                     stopSendingImages();
+                    scheduleReconnect();
                 }
             };
             webSocketClient.connect();
@@ -274,6 +294,17 @@ public class CameraFragment extends Fragment {
         }
     }
 
+    private void scheduleReconnect() {
+        if (isReconnecting) return;
+
+        isReconnecting = true;
+        handler.postDelayed(() -> {
+            Log.d("WebSocket", "Attempting to reconnect...");
+            connectWebSocket();  // Try to reconnect
+            isReconnecting = false;
+        }, RECONNECT_DELAY_MS);
+    }
+
     private Bitmap imageToBitmap(ImageProxy image) {
         ImageProxy.PlaneProxy[] planes = image.getPlanes();
         ByteBuffer yBuffer = planes[0].getBuffer();
@@ -303,6 +334,7 @@ public class CameraFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        cameraExecutor.shutdown();
         super.onDestroy();
         stopSendingImages();
         if (webSocketClient != null) {

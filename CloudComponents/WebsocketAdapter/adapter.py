@@ -26,7 +26,7 @@ async def connect_to_socketio():
     while True:
         try:
             logger.info("[ADAPTER] Attempting to connect to main server...")
-            await sio.connect('https://')
+            await sio.connect('')
             await sio_connected_event.wait()  # Wait until connect() event sets this
             logger.info("[ADAPTER] Connected to main server")
             break
@@ -107,6 +107,9 @@ async def handle_esp32(websocket, path):
                 })
             elif isinstance(message, str):
                 # Check if this is a pong reply to our manual ping
+                if message == "automaticpong":
+                    continue
+
                 if message == "pong":
                     start_time = pending_pings.pop(device_id, None)
                     if start_time is not None:
@@ -146,6 +149,11 @@ async def handle_esp32(websocket, path):
         ping_task.cancel()
         if device_id in connected_esp32_clients:
             del connected_esp32_clients[device_id]
+            await safe_emit('esp32_message', {
+                'device_id': device_id,
+                'type': 'text',
+                'message': "disconnected"
+            })
 
 @sio.event
 async def connect():
@@ -164,7 +172,7 @@ async def disconnect():
         logger.info("[ADAPTER] Reconnect task already running")
 
 async def safe_emit(event, data):
-    await sio_connected_event.wait()
+    await sio_connected_event.wait()  # Wait until connected
     await sio.emit(event, data)
 
 async def main():
@@ -172,7 +180,8 @@ async def main():
     ws_server = await websockets.serve(
         handle_esp32,
         "0.0.0.0",
-        8080
+        8080,
+        ping_interval=None
     )
     logger.info("[ADAPTER] WebSocket server started on port 8080")
 
