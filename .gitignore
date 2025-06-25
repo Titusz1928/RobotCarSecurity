@@ -65,10 +65,3 @@ venv/
 .DS_Store
 Thumbs.db
 
-# === IGNORE GENERATED MEDIA (if not needed) ===
-# Adjust or scope this if you have needed assets
-#static/*.png
-#static/*.jpg
-#static/*.ico
-#static/*.webmanifest
-#static/*.svg
