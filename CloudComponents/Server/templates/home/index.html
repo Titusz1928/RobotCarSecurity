@@ -19,14 +19,19 @@
         Each device can be programmed separately, you can customize each one with the help of a terminal. You can also turn on and off features such as person detection and lane assist for each device.
         Person detection is the analysis of the footage and whenever it detects a person it notifies you on your phone, using a mobile application. lane assist helps the robot cars move.
         A robot car is powered by 4 Li-ion batteries and uses 2 microcontrollers (Arduino Uno & ESP32Cam) and a motor driver module (L298N).
+        There is also a desktop application that allows you to record the feed from the devices so that you can replay it later.
     </p>
     <img src='/static/robotcar.jpg' class='img-fluid' />
     <br>
     <hr>
     <br>
-    <p>
-        There is also a desktop application that allows you to record the feed from the devices so that you can replay it later.
+     <p>
+        Latest fixes and additions:
     </p>
+    <ul>
+        <li>Fixed video streaming for Android 11+ (2025.06.25) </li>
+        <li>Added ping, esp32_stream_on, esp32_stream_off commands (2025.06.21) </li>
+    </ul>
 
     ",
     icon_name="fa-regular fa-circle-info"
@@ -37,6 +42,23 @@
       " Robot Car Components",
       "",
       "
+        <p>
+            All components:
+        </p>
+        <ul>
+          <li>2x battery module 2x18650</li>
+           <li> 4x battery Li-ion 18650</li>
+           <li> L298N motor driver</li>
+           <li> Arduino Uno</li>
+           <li> ESP32-Cam</li>
+           <li> LM2596 buck converter</li>
+           <li> HC-SR04 sensor</li>
+           <li> 4 TT DC motoar (and wheels)</li>
+           <li> Breadboard</li>
+            <li>3 rezistors</li>
+           <li> 14 MM jumper wires, 14 MF jumper wires, 1 FF jumper wire</li>
+
+        </ul>
       <table class='table'>
         <tr>
           <td><img src='/static/arduinouno.jpg' class='img-fluid' /></td>
@@ -60,7 +82,7 @@
       "
          <div class='download-section'>
           <h4>Windows Installer</h4>
-          <a href='https://storage.googleapis.com//.exe' class='download-button' download>
+          <a href='https://storage.googleapis.com/.exe' class='download-button' download>
             <i class='fas fa-download'></i> Download Windows Application (v1.01)
           </a>
           <p class='download-info'>
@@ -71,13 +93,13 @@
         </div>
         <div class='download-section' style='margin-top: 20px;'>
                     <h4>Android Installer</h4>
-          <a href='https://storage.googleapis.com//.apk' class='download-button' download>
+          <a href='https://storage.googleapis.com/.apk' class='download-button' download>
             <i class='fas fa-download'></i> Download Android Application
           </a>
           <p class='download-info'>
             <strong>System Requirements:</strong> Android 7 Nougat<br>
             <strong>File Size:</strong> 20MB<br>
-            <strong>SHA256:</strong> e21c83f19bf482df8aa4bf77b432cdbb9f48ee3318cacca79bcf9189455814dd
+            <strong>SHA256:</strong> 15e246e036a06d0ac8e41a8399833daa25cc52c5d8d1ff23f1a58e37e5b6575b
           </p>
         </div>
       ",

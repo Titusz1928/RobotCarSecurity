@@ -7,16 +7,21 @@ import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.ImageProxy;
@@ -109,7 +114,7 @@ public class CameraFragment extends Fragment {
         return id;
     }
 
-    private void startCamera() {
+    @OptIn(markerClass = ExperimentalGetImage.class) private void startCamera() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
                 ProcessCameraProvider.getInstance(requireContext());
 
@@ -123,13 +128,27 @@ public class CameraFragment extends Fragment {
 
                 // Create the ImageAnalysis use case
                 ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
+                        .setTargetResolution(new Size(1280, 720))
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build();
 
-                imageAnalysis.setAnalyzer(cameraExecutor, image -> {
-                    //Log.d("MyLog", "Frame received"); // <-- Add this
-                    latestFrame = imageToBitmap(image);
-                    image.close();
+                imageAnalysis.setAnalyzer(cameraExecutor, imageProxy -> {
+                    Image image = imageProxy.getImage();
+                    if (image != null) {
+                        Log.d("MyLog", "Bitmap size: " + image.getWidth() + "x" + image.getHeight());
+                        Log.d("MyLog", "Image format: " + image.getFormat());  // Expected: 35 for YUV_420_888
+
+                        Image.Plane[] planes = image.getPlanes();
+                        for (int i = 0; i < planes.length; i++) {
+                            Log.d("MyLog", "Plane " + i + " pixelStride: " + planes[i].getPixelStride() +
+                                    ", rowStride: " + planes[i].getRowStride());
+                        }
+
+                        // Your processing method
+                        latestFrame = imageToBitmap(imageProxy);
+                    }
+
+                    imageProxy.close(); // Always close the proxy to avoid memory leaks
                 });
 
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
@@ -305,7 +324,110 @@ public class CameraFragment extends Fragment {
         }, RECONNECT_DELAY_MS);
     }
 
+
     private Bitmap imageToBitmap(ImageProxy image) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) { // Android 11+
+            //Log.d("MyLog", "Using NEW YUV420 converter");
+            return convertYUV420ToBitmap_New(image);
+        } else {
+            //Log.d("MyLog", "Using OLD YUV420 converter");
+            return convertYUV420ToBitmap_Old(image);
+        }
+    }
+
+    private Bitmap convertYUV420ToBitmap_Old(ImageProxy image) {
+        ImageProxy.PlaneProxy[] planes = image.getPlanes();
+        ByteBuffer yBuffer = planes[0].getBuffer();
+        ByteBuffer uBuffer = planes[1].getBuffer();
+        ByteBuffer vBuffer = planes[2].getBuffer();
+
+        int ySize = yBuffer.remaining();
+        int uSize = uBuffer.remaining();
+        int vSize = vBuffer.remaining();
+
+        byte[] nv21 = new byte[ySize + uSize + vSize];
+
+        // NV21 layout: Y + V + U
+        yBuffer.get(nv21, 0, ySize);
+        vBuffer.get(nv21, ySize, vSize);
+        uBuffer.get(nv21, ySize + vSize, uSize);
+
+        YuvImage yuvImage = new YuvImage(nv21, ImageFormat.NV21,
+                image.getWidth(), image.getHeight(), null);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        yuvImage.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 90, out);
+        byte[] jpegBytes = out.toByteArray();
+
+        return BitmapFactory.decodeByteArray(jpegBytes, 0, jpegBytes.length);
+    }
+
+    private Bitmap convertYUV420ToBitmap_New(ImageProxy image) {
+        byte[] nv21 = YUV_420_888toNV21(image);
+
+        YuvImage yuvImage = new YuvImage(nv21, ImageFormat.NV21,
+                image.getWidth(), image.getHeight(), null);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        yuvImage.compressToJpeg(new Rect(0, 0, image.getWidth(), image.getHeight()), 90, out);
+        byte[] jpegBytes = out.toByteArray();
+
+        return BitmapFactory.decodeByteArray(jpegBytes, 0, jpegBytes.length);
+    }
+
+    private static byte[] YUV_420_888toNV21(ImageProxy image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        ImageProxy.PlaneProxy[] planes = image.getPlanes();
+        ByteBuffer yBuffer = planes[0].getBuffer();
+        ByteBuffer uBuffer = planes[1].getBuffer();
+        ByteBuffer vBuffer = planes[2].getBuffer();
+
+        int yRowStride = planes[0].getRowStride();
+        int yPixelStride = planes[0].getPixelStride();
+        int uRowStride = planes[1].getRowStride();
+        int uPixelStride = planes[1].getPixelStride();
+
+        byte[] nv21 = new byte[width * height * 3 / 2];
+
+        // Copy Y plane
+        int pos = 0;
+        for (int row = 0; row < height; row++) {
+            int yBufferPos = row * yRowStride;
+            for (int col = 0; col < width; col++) {
+                nv21[pos++] = yBuffer.get(yBufferPos + col * yPixelStride);
+            }
+        }
+
+        // Copy UV plane interleaved as VU for NV21
+        int chromaHeight = height / 2;
+        int chromaWidth = width / 2;
+
+        for (int row = 0; row < chromaHeight; row++) {
+            int uBufferPos = row * uRowStride;
+            int vBufferPos = row * planes[2].getRowStride();
+
+            for (int col = 0; col < chromaWidth; col++) {
+                // Make sure indices do not go out of bounds
+                int uIndex = uBufferPos + col * uPixelStride;
+                int vIndex = vBufferPos + col * planes[2].getPixelStride();
+
+                if (vIndex >= vBuffer.limit() || uIndex >= uBuffer.limit()) {
+                    // Defensive: break if indexes out of bounds
+                    break;
+                }
+
+                nv21[pos++] = vBuffer.get(vIndex); // V
+                nv21[pos++] = uBuffer.get(uIndex); // U
+            }
+        }
+
+        return nv21;
+    }
+
+
+   /* private Bitmap imageToBitmap(ImageProxy image) {
         ImageProxy.PlaneProxy[] planes = image.getPlanes();
         ByteBuffer yBuffer = planes[0].getBuffer();
         ByteBuffer uBuffer = planes[1].getBuffer();
@@ -330,7 +452,7 @@ public class CameraFragment extends Fragment {
         byte[] jpegBytes = out.toByteArray();
 
         return BitmapFactory.decodeByteArray(jpegBytes, 0, jpegBytes.length);
-    }
+    }*/
 
     @Override
     public void onDestroy() {
