@@ -25,9 +25,13 @@ reconnect_task = None
 async def connect_to_socketio():
     while True:
         try:
+            if sio.connected:
+                logger.info("[ADAPTER] Already connected to main server, skipping connect")
+                return
+
             logger.info("[ADAPTER] Attempting to connect to main server...")
             await sio.connect('')
-            await sio_connected_event.wait()  # Wait until connect() event sets this
+            await sio_connected_event.wait()
             logger.info("[ADAPTER] Connected to main server")
             break
         except Exception as e:
@@ -96,7 +100,7 @@ async def handle_esp32(websocket, path):
 
     try:
         async for message in websocket:
-            logger.info(f"[ADAPTER] Received from {device_id}: {len(message)} bytes")
+            #logger.info(f"[ADAPTER] Received from {device_id}: {len(message)} bytes")
 
             if isinstance(message, bytes):
                 image_b64 = base64.b64encode(message).decode('utf-8')
@@ -108,6 +112,7 @@ async def handle_esp32(websocket, path):
             elif isinstance(message, str):
                 # Check if this is a pong reply to our manual ping
                 if message == "automaticpong":
+                    # Silently acknowledge the automaticpong and do nothing
                     continue
 
                 if message == "pong":
@@ -149,6 +154,11 @@ async def handle_esp32(websocket, path):
         ping_task.cancel()
         if device_id in connected_esp32_clients:
             del connected_esp32_clients[device_id]
+
+            await safe_emit('esp32_disconnect', {
+                'device_id': device_id
+            })
+
             await safe_emit('esp32_message', {
                 'device_id': device_id,
                 'type': 'text',
@@ -159,6 +169,11 @@ async def handle_esp32(websocket, path):
 async def connect():
     logger.info("[ADAPTER] Socket.IO connected")
     sio_connected_event.set()
+
+    # Re-register all currently connected devices
+    for device_id in connected_esp32_clients.keys():
+        await sio.emit('esp32_connect', {'device_id': device_id})
+        logger.info(f"[ADAPTER] Re-emitted esp32_connect for {device_id}")
 
 @sio.event
 async def disconnect():
